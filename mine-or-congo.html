@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mine d'Or Congo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold-400: #fbbf24;
+            --gold-500: #f59e0b;
+            --gold-600: #d97706;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-primary: #0f0f1a;
+            --bg-secondary: #1a1a2e;
+            --bg-tertiary: #252540;
+            --bg-card: rgba(37, 37, 64, 0.7);
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --gradient-gold: linear-gradient(135deg, var(--gold-400) 0%, var(--gold-600) 100%);
+            --shadow-gold: 0 0 20px rgba(251, 191, 36, 0.3);
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --sidebar-width: 260px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            background: radial-gradient(circle at 20% 20%, rgba(251, 191, 36, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 40%);
+        }
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-gold);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-gold);
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .logo-sub {
+            font-size: 0.875rem;
+            color: var(--gold-400);
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-lg);
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            width: 100%;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--gradient-gold);
+            color: var(--bg-primary);
+            font-weight: 500;
+            box-shadow: var(--shadow-gold);
+        }
+
+        .main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .page-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @media (max-width: 1200px) {
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .grid-4,
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+        }
+
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: 1.25rem;
+            transition: all 0.2s;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(37, 37, 64, 0.9) 0%, rgba(26, 26, 46, 0.9) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: 1.25rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-gold);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            box-shadow: var(--shadow-gold);
+        }
+
+        .stat-value {
+            font-size: 1.875rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 0.875rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        td {
+            font-size: 0.875rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+        }
+
+        .text-gold {
+            color: var(--gold-400);
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--gradient-gold);
+            color: var(--bg-primary);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            font-size: 1rem;
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--gold-400);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 1.5rem;
+            width: 90%;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-body {
+            padding: 1.25rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            padding: 1.25rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .btn-secondary {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .status-online {
+            color: var(--success);
+        }
+
+        .status-offline {
+            color: var(--warning);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">💎</div>
+                <div>
+                    <div class="logo-text">Mine d'Or</div>
+                    <div class="logo-sub">Congo</div>
+                </div>
+            </div>
+            <nav class="nav">
+                <button class="nav-item active" data-page="dashboard">🏠 Tableau de bord</button>
+                <button class="nav-item" data-page="production">⛏️ Production</button>
+                <button class="nav-item" data-page="workers">👷 Personnel</button>
+                <button class="nav-item" data-page="inventory">📦 Inventaire</button>
+            </nav>
+        </aside>
+        <main class="main">
+            <!-- Dashboard -->
+            <div id="dashboard" class="page active">
+                <div class="page-header">
+                    <h1>📊 Tableau de bord</h1>
+                    <p>Vue d'ensemble des opérations</p>
+                </div>
+                <div class="grid grid-4" style="margin-bottom:1.5rem">
+                    <div class="stat-card">
+                        <div class="stat-icon">💎</div>
+                        <div class="stat-value" id="today-prod">0 g</div>
+                        <div class="stat-label">Aujourd'hui</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-value" id="week-prod">0 g</div>
+                        <div class="stat-label">Cette semaine</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👷</div>
+                        <div class="stat-value" id="workers-count">0</div>
+                        <div class="stat-label">Travailleurs actifs</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-value" id="inventory-count">0</div>
+                        <div class="stat-label">Articles en stock</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">🕐 Production récente</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Quantité</th>
+                                <th>Équipe</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-prod"></tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Production -->
+            <div id="production" class="page">
+                <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+                    <div>
+                        <h1>⛏️ Production</h1>
+                        <p>Suivi de l'extraction d'or</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal('prod')">➕ Nouvelle entrée</button>
+                </div>
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Quantité</th>
+                                <th>Équipe</th>
+                                <th>Quart</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="prod-table"></tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Workers -->
+            <div id="workers" class="page">
+                <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+                    <div>
+                        <h1>👷 Personnel</h1>
+                        <p>Gestion des travailleurs</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal('worker')">➕ Nouveau travailleur</button>
+                </div>
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Rôle</th>
+                                <th>Équipe</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="workers-table"></tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Inventory -->
+            <div id="inventory" class="page">
+                <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+                    <div>
+                        <h1>📦 Inventaire</h1>
+                        <p>Équipements et stock</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal('inv')">➕ Nouvel article</button>
+                </div>
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Article</th>
+                                <th>Catégorie</th>
+                                <th>Quantité</th>
+                                <th>État</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inv-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- Modals -->
+    <div id="modal-prod" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="prod-modal-title">Nouvelle production</h3><button onclick="closeModal('prod')"
+                    style="background:none;border:none;color:var(--text-secondary);font-size:1.5rem;cursor:pointer">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="prod-id">
+                <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-input"
+                        id="prod-date"></div>
+                <div class="form-group"><label class="form-label">Quantité (g)</label><input type="number"
+                        class="form-input" id="prod-qty" placeholder="250"></div>
+                <div class="form-group"><label class="form-label">Équipe</label><select class="form-select"
+                        id="prod-team">
+                        <option>Équipe A</option>
+                        <option>Équipe B</option>
+                        <option>Équipe C</option>
+                    </select></div>
+                <div class="form-group"><label class="form-label">Quart</label><select class="form-select"
+                        id="prod-shift">
+                        <option value="morning">Matin</option>
+                        <option value="afternoon">Après-midi</option>
+                        <option value="night">Nuit</option>
+                    </select></div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary"
+                    onclick="closeModal('prod')">Annuler</button><button class="btn btn-primary"
+                    onclick="saveProd()">Enregistrer</button></div>
+        </div>
+    </div>
+    <div id="modal-worker" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="worker-modal-title">Nouveau travailleur</h3><button onclick="closeModal('worker')"
+                    style="background:none;border:none;color:var(--text-secondary);font-size:1.5rem;cursor:pointer">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="worker-id">
+                <div class="form-group"><label class="form-label">Prénom</label><input type="text" class="form-input"
+                        id="worker-first" placeholder="Jean"></div>
+                <div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input"
+                        id="worker-last" placeholder="Kabongo"></div>
+                <div class="form-group"><label class="form-label">Rôle</label><input type="text" class="form-input"
+                        id="worker-role" placeholder="Mineur"></div>
+                <div class="form-group"><label class="form-label">Équipe</label><select class="form-select"
+                        id="worker-team">
+                        <option>Équipe A</option>
+                        <option>Équipe B</option>
+                        <option>Équipe C</option>
+                    </select></div>
+                <div class="form-group"><label class="form-label">Statut</label><select class="form-select"
+                        id="worker-status">
+                        <option value="active">Actif</option>
+                        <option value="leave">En congé</option>
+                        <option value="inactive">Inactif</option>
+                    </select></div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary"
+                    onclick="closeModal('worker')">Annuler</button><button class="btn btn-primary"
+                    onclick="saveWorker()">Enregistrer</button></div>
+        </div>
+    </div>
+    <div id="modal-inv" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="inv-modal-title">Nouvel article</h3><button onclick="closeModal('inv')"
+                    style="background:none;border:none;color:var(--text-secondary);font-size:1.5rem;cursor:pointer">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="inv-id">
+                <div class="form-group"><label class="form-label">Nom</label><input type="text" class="form-input"
+                        id="inv-name" placeholder="Foreuse"></div>
+                <div class="form-group"><label class="form-label">Catégorie</label><select class="form-select"
+                        id="inv-cat">
+                        <option value="equipment">Équipement</option>
+                        <option value="tools">Outils</option>
+                        <option value="safety">Sécurité</option>
+                        <option value="consumables">Consommables</option>
+                    </select></div>
+                <div class="form-group"><label class="form-label">Quantité</label><input type="number"
+                        class="form-input" id="inv-qty" placeholder="10"></div>
+                <div class="form-group"><label class="form-label">État</label><select class="form-select" id="inv-cond">
+                        <option value="good">Bon</option>
+                        <option value="fair">Correct</option>
+                        <option value="poor">Mauvais</option>
+                    </select></div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary"
+                    onclick="closeModal('inv')">Annuler</button><button class="btn btn-primary"
+                    onclick="saveInv()">Enregistrer</button></div>
+        </div>
+    </div>
+    <script>
+        const DB = { productions: [], workers: [], inventory: [] };
+        const LS_KEY = 'mineOrCongo';
+        function loadData() {
+            const saved = localStorage.getItem(LS_KEY);
+            if (saved) { const d = JSON.parse(saved); DB.productions = d.productions || []; DB.workers = d.workers || []; DB.inventory = d.inventory || []; }
+            else seedData();
+        }
+        function saveData() { localStorage.setItem(LS_KEY, JSON.stringify(DB)); }
+        function seedData() {
+            const today = new Date().toISOString().split('T')[0];
+            DB.productions = [
+                { id: 1, date: today, qty: 245, team: 'Équipe A', shift: 'morning' },
+                { id: 2, date: today, qty: 180, team: 'Équipe B', shift: 'afternoon' }
+            ];
+            DB.workers = [
+                { id: 1, first: 'Jean', last: 'Kabongo', role: 'Chef d\'équipe', team: 'Équipe A', status: 'active' },
+                { id: 2, first: 'Marie', last: 'Mutombo', role: 'Opératrice', team: 'Équipe A', status: 'active' },
+                { id: 3, first: 'Pierre', last: 'Tshisekedi', role: 'Mineur', team: 'Équipe B', status: 'active' }
+            ];
+            DB.inventory = [
+                { id: 1, name: 'Foreuse hydraulique', cat: 'equipment', qty: 3, cond: 'good' },
+                { id: 2, name: 'Casques de sécurité', cat: 'safety', qty: 25, cond: 'good' },
+                { id: 3, name: 'Pioches', cat: 'tools', qty: 15, cond: 'fair' }
+            ];
+            saveData();
+        }
+        function formatG(g) { return g >= 1000 ? (g / 1000).toFixed(2) + ' kg' : g + ' g'; }
+        function getShift(s) { return { morning: 'Matin', afternoon: 'Après-midi', night: 'Nuit' }[s] || s; }
+        function getCat(c) { return { equipment: 'Équipement', tools: 'Outils', safety: 'Sécurité', consumables: 'Consommables' }[c] || c; }
+        function getCond(c) { return { good: 'Bon', fair: 'Correct', poor: 'Mauvais' }[c] || c; }
+        function getStatus(s) { return { active: 'Actif', leave: 'En congé', inactive: 'Inactif' }[s] || s; }
+        function render() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayProd = DB.productions.filter(p => p.date === today).reduce((s, p) => s + p.qty, 0);
+            const weekProd = DB.productions.reduce((s, p) => s + p.qty, 0);
+            document.getElementById('today-prod').textContent = formatG(todayProd);
+            document.getElementById('week-prod').textContent = formatG(weekProd);
+            document.getElementById('workers-count').textContent = DB.workers.filter(w => w.status === 'active').length;
+            document.getElementById('inventory-count').textContent = DB.inventory.length;
+            document.getElementById('recent-prod').innerHTML = DB.productions.slice(0, 5).map(p => `<tr><td>${p.date}</td><td class="text-gold font-bold">${formatG(p.qty)}</td><td><span class="badge">${p.team}</span></td></tr>`).join('');
+            document.getElementById('prod-table').innerHTML = DB.productions.map(p => `<tr><td>${p.date}</td><td class="text-gold font-bold">${formatG(p.qty)}</td><td>${p.team}</td><td><span class="badge">${getShift(p.shift)}</span></td><td><button onclick="editProd(${p.id})" style="background:none;border:none;cursor:pointer">✏️</button><button onclick="delProd(${p.id})" style="background:none;border:none;cursor:pointer">🗑️</button></td></tr>`).join('') || '<tr><td colspan="5" class="empty-state">Aucune production</td></tr>';
+            document.getElementById('workers-table').innerHTML = DB.workers.map(w => `<tr><td class="font-bold">${w.first} ${w.last}</td><td>${w.role}</td><td><span class="badge">${w.team}</span></td><td>${getStatus(w.status)}</td><td><button onclick="editWorker(${w.id})" style="background:none;border:none;cursor:pointer">✏️</button><button onclick="delWorker(${w.id})" style="background:none;border:none;cursor:pointer">🗑️</button></td></tr>`).join('') || '<tr><td colspan="5" class="empty-state">Aucun travailleur</td></tr>';
+            document.getElementById('inv-table').innerHTML = DB.inventory.map(i => `<tr><td class="font-bold">${i.name}</td><td><span class="badge">${getCat(i.cat)}</span></td><td>${i.qty}</td><td>${getCond(i.cond)}</td><td><button onclick="editInv(${i.id})" style="background:none;border:none;cursor:pointer">✏️</button><button onclick="delInv(${i.id})" style="background:none;border:none;cursor:pointer">🗑️</button></td></tr>`).join('') || '<tr><td colspan="5" class="empty-state">Aucun article</td></tr>';
+        }
+        function openModal(t) { document.getElementById('modal-' + t).classList.add('active'); if (t === 'prod') document.getElementById('prod-date').value = new Date().toISOString().split('T')[0]; }
+        function closeModal(t) { document.getElementById('modal-' + t).classList.remove('active'); clearForm(t); }
+        function clearForm(t) {
+            if (t === 'prod') { document.getElementById('prod-id').value = ''; document.getElementById('prod-qty').value = ''; document.getElementById('prod-modal-title').textContent = 'Nouvelle production'; }
+            if (t === 'worker') { document.getElementById('worker-id').value = ''; document.getElementById('worker-first').value = ''; document.getElementById('worker-last').value = ''; document.getElementById('worker-role').value = ''; document.getElementById('worker-modal-title').textContent = 'Nouveau travailleur'; }
+            if (t === 'inv') { document.getElementById('inv-id').value = ''; document.getElementById('inv-name').value = ''; document.getElementById('inv-qty').value = ''; document.getElementById('inv-modal-title').textContent = 'Nouvel article'; }
+        }
+        function saveProd() {
+            const id = document.getElementById('prod-id').value;
+            const data = { date: document.getElementById('prod-date').value, qty: Number(document.getElementById('prod-qty').value), team: document.getElementById('prod-team').value, shift: document.getElementById('prod-shift').value };
+            if (id) { const idx = DB.productions.findIndex(p => p.id == id); if (idx >= 0) DB.productions[idx] = { ...DB.productions[idx], ...data }; }
+            else { data.id = Date.now(); DB.productions.unshift(data); }
+            saveData(); render(); closeModal('prod');
+        }
+        function editProd(id) { const p = DB.productions.find(x => x.id === id); if (!p) return; document.getElementById('prod-id').value = p.id; document.getElementById('prod-date').value = p.date; document.getElementById('prod-qty').value = p.qty; document.getElementById('prod-team').value = p.team; document.getElementById('prod-shift').value = p.shift; document.getElementById('prod-modal-title').textContent = 'Modifier production'; openModal('prod'); }
+        function delProd(id) { if (confirm('Supprimer?')) { DB.productions = DB.productions.filter(p => p.id !== id); saveData(); render(); } }
+        function saveWorker() {
+            const id = document.getElementById('worker-id').value;
+            const data = { first: document.getElementById('worker-first').value, last: document.getElementById('worker-last').value, role: document.getElementById('worker-role').value, team: document.getElementById('worker-team').value, status: document.getElementById('worker-status').value };
+            if (id) { const idx = DB.workers.findIndex(w => w.id == id); if (idx >= 0) DB.workers[idx] = { ...DB.workers[idx], ...data }; }
+            else { data.id = Date.now(); DB.workers.push(data); }
+            saveData(); render(); closeModal('worker');
+        }
+        function editWorker(id) { const w = DB.workers.find(x => x.id === id); if (!w) return; document.getElementById('worker-id').value = w.id; document.getElementById('worker-first').value = w.first; document.getElementById('worker-last').value = w.last; document.getElementById('worker-role').value = w.role; document.getElementById('worker-team').value = w.team; document.getElementById('worker-status').value = w.status; document.getElementById('worker-modal-title').textContent = 'Modifier travailleur'; openModal('worker'); }
+        function delWorker(id) { if (confirm('Supprimer?')) { DB.workers = DB.workers.filter(w => w.id !== id); saveData(); render(); } }
+        function saveInv() {
+            const id = document.getElementById('inv-id').value;
+            const data = { name: document.getElementById('inv-name').value, cat: document.getElementById('inv-cat').value, qty: Number(document.getElementById('inv-qty').value), cond: document.getElementById('inv-cond').value };
+            if (id) { const idx = DB.inventory.findIndex(i => i.id == id); if (idx >= 0) DB.inventory[idx] = { ...DB.inventory[idx], ...data }; }
+            else { data.id = Date.now(); DB.inventory.push(data); }
+            saveData(); render(); closeModal('inv');
+        }
+        function editInv(id) { const i = DB.inventory.find(x => x.id === id); if (!i) return; document.getElementById('inv-id').value = i.id; document.getElementById('inv-name').value = i.name; document.getElementById('inv-cat').value = i.cat; document.getElementById('inv-qty').value = i.qty; document.getElementById('inv-cond').value = i.cond; document.getElementById('inv-modal-title').textContent = 'Modifier article'; openModal('inv'); }
+        function delInv(id) { if (confirm('Supprimer?')) { DB.inventory = DB.inventory.filter(i => i.id !== id); saveData(); render(); } }
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.page).classList.add('active');
+            });
+        });
+        loadData(); render();
+    </script>
+</body>
+
+</html>
